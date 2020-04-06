@@ -1,7 +1,8 @@
 #include <wiringPi.h>
 #include <stdio.h>
 #include <time.h>
-
+//Compile on a Raspberry Pi with a connected Maxbotix ultrasonic rangefinder LV-EZ connected through PWM0
+//g++ readUS.cpp -lwiringPi -o readUS
 int linearInterp(float value){
 //the look up table will provide the distance in mm that each focus position goes to.
 //to construct your own for your lens, follow bluetoothctl.txt for instructions.
@@ -31,8 +32,8 @@ return returnValue;
 int main (void){
 wiringPiSetup();
 pinMode(15, OUTPUT);
-digitalWrite(15, HIGH);
-pinMode(1, INPUT);
+digitalWrite(15, HIGH);//In my wiring setup, I'm powering the device through this pin (BCM 14) so I can turn it off
+pinMode(1, INPUT);//wiringPi 1 is BCM 18 or PWM0, and will be read.
 clock_t start;
 clock_t stop;
 while(reading==1){}
