@@ -24,9 +24,13 @@
 LIDARLite_v3 myLidarLite;
 
 int linearInterp(float value){
+//experimentally determined look up table for your lens (this is on a 25mm Olympus f1.8)
+//generated based on using two bluetoothctl shells simultaneously,
+//one receiving notifications from the Incoming Camera Control characteristic
+//another writing focus distances 0.0 to 1.0 to the Outgoing Camera Control characteristic
 float lut[11][2]={
 {0.0, 0.0},
-{0.125, 250.0}, //the actual limit hehe
+{0.125, 250.0},
 {0.25, 265.0},
 {0.375, 325.0},
 {0.5, 425.0},
@@ -34,7 +38,7 @@ float lut[11][2]={
 {0.75, 1560.0},
 {0.8, 2975.0},
 {0.825, 6790.0},
-{0.875, 1000000.0}, //the actual limit hehe
+{0.875, 1000000.0},
 {1.0, 1000001.0}};
 int position=1;
 while(value>lut[position][1]){position++;}
