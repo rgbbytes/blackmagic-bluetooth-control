@@ -1,0 +1,20 @@
+#!/usr/bin/expect -f
+set prompt "#"
+set address XX:XX:XX:XX:XX:XX
+spawn bluetoothctl
+expect -re $prompt
+expect "Agent registered"
+send "connect $address\r"
+expect "Connection successful"
+send "menu gatt\r"
+expect "Display help about this program"
+send "select-attribute 5dd3465f-1aee-4299-8493-d2eca2f8e1bb\r"
+expect -re $prompt
+while { true } {
+expect -re $prompt
+set command [exec ./readLidar]
+send "$command\r"
+#send_user $FocusPosition
+}
+send "quit\r"
+expect eof

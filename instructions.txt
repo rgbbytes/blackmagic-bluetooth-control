@@ -1,0 +1,46 @@
+#this works on an ubuntu 18.04 machine with bluez, hcitool, gatttool, bluetooth, etc. apt-get installed. Do the same if you get issues.
+
+#Use bluetoothctl to pair with the pin code and enter the gatt submenu to write to characteristics
+
+bluetoothctl
+#Inside the ctl, run
+agent on
+scan on
+#wait until you see something like "[CHG] Device D0:CF:5E:XX:XX:XX Name: Pocket Cinema Camera 4K A:10F"
+scan off
+#or type devices to get Device D0:CF:5E:XX:XX:XX Pocket Cinema Camera 4K A:10F
+devices
+#Then using the address, with the agent certainly on...
+agent on
+pair D0:CF:5E:XX:XX:XX
+#it will prompt you for the passkey or cancel itself, just retry it in a second
+#when it prompts for the passkey, the BMPCC4K will display the pin in the Setup menu and you can enter it into the bluetoothctl and it will connect, for example enter 123456
+123456
+#Then it will say pairing successful, so now connect to it
+connect D0:CF:5E:XX:XX:XX
+#then it will say connection successful.
+#Woo!
+#now let's write its GATT characteristics, so enter the menu
+menu gatt
+#now get info from its characteristics (The incoming Camera Control UUID)
+#to see all the attributes
+list-attributes
+#to get specific info
+attribute-info B864E140-76A0-416A-BF30-5876504537D9
+select-attribute B864E140-76A0-416A-BF30-5876504537D9
+notify on
+#now, the bluetoothctl will constantly show you the status bytes, and if you hit record, it will change the status, which is cool.
+#to stop it, turn off the notify
+notify off
+#now let's write commands to it. Select the Outgoing Camera Control Characteristic's UUID
+select-attribute 5DD3465F-1AEE-4299-8493-D2ECA2F8E1BB
+#now to write a packet to set ISO to 100, according to https://forum.blackmagicdesign.com/viewtopic.php?f=12&t=94680
+write "0x01 0x08 0x00 0x00 0x01 0x0e 0x03 0x00 0x64 0x00 0x00 0x00"
+#To set the focus position, using the least significant byte first on the 5.11 fixed number ranging from 1.0 to 0.0, we write
+#focus at 1.0                                    **    *
+write "0x01 0x08 0x00 0x00 0x00 0x00 0x80 0x00 0x00 0x08 0x00 0x00"
+#focus at 0.999
+write "0x01 0x08 0x00 0x00 0x00 0x00 0x80 0x00 0xff 0x07 0x00 0x00"
+#focus at 0.0
+write "0x01 0x08 0x00 0x00 0x00 0x00 0x80 0x00 0x00 0x00 0x00 0x00"
+#                                                ^^    ^
