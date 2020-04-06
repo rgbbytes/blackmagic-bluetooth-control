@@ -1,0 +1,6 @@
+# blackmagic-bluetooth-control
+Control Blackmagic Design cameras using Bluetooth Low Energy
+
+Currently, for debug purposes, the bluetoothctl shell works great.
+For automation purposes, you can use bash to invoke a bluetoothctl shell, but this session dies after the bash command ends, so expect can be used to continuously operate a bluetoothctl shell while receiving commands from other programs.
+For low level purposes, I'm still figuring out how to invoke bluez commands in C.
