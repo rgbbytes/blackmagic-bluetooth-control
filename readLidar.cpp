@@ -15,7 +15,8 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 ------------------------------------------------------------------------------*/
-
+//compile on a Raspberry Pi with a Lidar Lite V3 sensor connected through I2C with
+//g++ readLidar.cpp lidarlite_v3.cpp -I . -o readLidar
 #include <linux/types.h>
 #include <cstdio>
 
